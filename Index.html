@@ -1,0 +1,357 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Climate Survey - Data Entry</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: linear-gradient(135deg, #2c3e50, #3498db); color: white; padding: 30px; text-align: center; }
+        .status-bar { background: #34495e; color: white; padding: 15px 30px; display: flex; justify-content: space-between; flex-wrap: wrap; }
+        .form-container { padding: 30px; max-height: 70vh; overflow-y: auto; }
+        .section { margin-bottom: 40px; border: 1px solid #e0e0e0; border-radius: 10px; padding: 25px; background: #fafafa; }
+        .section h2 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; margin-bottom: 25px; }
+        .question { margin-bottom: 25px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .question-text { font-weight: 600; margin-bottom: 15px; color: #2c3e50; }
+        .multiple-note { font-style: italic; color: #e74c3c; font-size: 0.9em; margin-bottom: 10px; }
+        .options { display: flex; flex-direction: column; gap: 8px; }
+        .option { display: flex; align-items: center; padding: 10px 15px; border: 2px solid #ecf0f1; border-radius: 6px; cursor: pointer; transition: all 0.3s ease; }
+        .option:hover { background: #f8f9fa; border-color: #3498db; }
+        .option.selected { background: #e3f2fd; border-color: #3498db; color: #1976d2; }
+        .option input { margin-right: 12px; }
+        .text-input { width: 100%; padding: 12px; border: 2px solid #ecf0f1; border-radius: 6px; }
+        .likert-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .likert-table th, .likert-table td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        .likert-table th { background: #34495e; color: white; }
+        .likert-table td:first-child { text-align: left; font-weight: 500; background: #f8f9fa; }
+        .buttons { background: #ecf0f1; padding: 25px; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+        .btn { padding: 12px 20px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+        .btn-primary { background: #27ae60; color: white; }
+        .btn-secondary { background: #3498db; color: white; }
+        .btn-export { background: #e67e22; color: white; }
+        .btn-view { background: #9b59b6; color: white; }
+        .success-message { background: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin: 15px 30px; display: none; text-align: center; font-weight: bold; }
+        .data-view { display: none; background: white; margin: 20px; border-radius: 10px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.8em; }
+        .data-table th, .data-table td { border: 1px solid #ddd; padding: 6px; text-align: left; }
+        .data-table th { background: #34495e; color: white; position: sticky; top: 0; }
+        .data-table tbody tr:nth-child(even) { background: #f8f9fa; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Climate Change & Respiratory Health Survey</h1>
+            <p>Data Entry System - Nnamdi Azikiwe University</p>
+        </div>
+        
+        <div class="status-bar">
+            <div>Current Entry: Person <span id="personNumber">1</span></div>
+            <div>Total Responses: <span id="totalResponses">0</span></div>
+        </div>
+        
+        <div class="success-message" id="successMessage">✅ Response saved successfully!</div>
+        
+        <form id="surveyForm" class="form-container">
+            <div class="section">
+                <h2>SECTION A: Demographic Information</h2>
+                
+                <div class="question">
+                    <div class="question-text">1. Age in years:</div>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'q1')"><input type="radio" name="q1" value="18-20"> 18-20</label>
+                        <label class="option" onclick="selectOption(this, 'q1')"><input type="radio" name="q1" value="21-25"> 21-25</label>
+                        <label class="option" onclick="selectOption(this, 'q1')"><input type="radio" name="q1" value=">25"> >25</label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">2. Gender:</div>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'q2')"><input type="radio" name="q2" value="Male"> Male</label>
+                        <label class="option" onclick="selectOption(this, 'q2')"><input type="radio" name="q2" value="Female"> Female</label>
+                        <label class="option" onclick="selectOption(this, 'q2')"><input type="radio" name="q2" value="Prefer not to say"> Prefer not to say</label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">3. Department:</div>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'q3')"><input type="radio" name="q3" value="Medicine"> Medicine</label>
+                        <label class="option" onclick="selectOption(this, 'q3')"><input type="radio" name="q3" value="Pharmacy"> Pharmacy</label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">4. Year of Study:</div>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'q4')"><input type="radio" name="q4" value="200L"> 200L</label>
+                        <label class="option" onclick="selectOption(this, 'q4')"><input type="radio" name="q4" value="300L"> 300L</label>
+                        <label class="option" onclick="selectOption(this, 'q4')"><input type="radio" name="q4" value="400L"> 400L</label>
+                        <label class="option" onclick="selectOption(this, 'q4')"><input type="radio" name="q4" value="500L"> 500L</label>
+                        <label class="option" onclick="selectOption(this, 'q4')"><input type="radio" name="q4" value="600L"> 600L</label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">5. Have you ever participated in any training, seminar or lecture related to climate change?</div>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'q5')"><input type="radio" name="q5" value="Yes"> Yes</label>
+                        <label class="option" onclick="selectOption(this, 'q5')"><input type="radio" name="q5" value="No"> No</label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">6. Have you learned about respiratory diseases as part of your coursework?</div>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'q6')"><input type="radio" name="q6" value="Yes"> Yes</label>
+                        <label class="option" onclick="selectOption(this, 'q6')"><input type="radio" name="q6" value="No"> No</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>SECTION B: Knowledge of Climate Change and Respiratory Diseases</h2>
+                
+                <div class="question">
+                    <div class="question-text">7. What do you understand by the term "climate change"?</div>
+                    <div class="multiple-note">(Tick all that apply)</div>
+                    <div class="options">
+                        <label class="option" onclick="selectMultiple(this, 'q7')"><input type="checkbox" name="q7" value="Changes in weather over long periods"> Changes in weather over long periods</label>
+                        <label class="option" onclick="selectMultiple(this, 'q7')"><input type="checkbox" name="q7" value="Global warming"> Global warming</label>
+                        <label class="option" onclick="selectMultiple(this, 'q7')"><input type="checkbox" name="q7" value="Ozone layer depletion"> Ozone layer depletion</label>
+                        <label class="option" onclick="selectMultiple(this, 'q7')"><input type="checkbox" name="q7" value="Environmental pollution caused by humans"> Environmental pollution caused by humans</label>
+                        <label class="option" onclick="selectMultiple(this, 'q7')"><input type="checkbox" name="q7" value="I'm not sure"> I'm not sure</label>
+                        <label class="option" onclick="selectMultiple(this, 'q7')"><input type="checkbox" name="q7" value="None of the above"> None of the above</label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">8. Which of the following do you think are signs of climate change?</div>
+                    <div class="multiple-note">(Tick all that apply)</div>
+                    <div class="options">
+                        <label class="option" onclick="selectMultiple(this, 'q8')"><input type="checkbox" name="q8" value="Intense heat"> Intense heat</label>
+                        <label class="option" onclick="selectMultiple(this, 'q8')"><input type="checkbox" name="q8" value="Flooding"> Flooding</label>
+                        <label class="option" onclick="selectMultiple(this, 'q8')"><input type="checkbox" name="q8" value="Droughts"> Droughts</label>
+                        <label class="option" onclick="selectMultiple(this, 'q8')"><input type="checkbox" name="q8" value="Poor air quality"> Poor air quality</label>
+                        <label class="option" onclick="selectMultiple(this, 'q8')"><input type="checkbox" name="q8" value="Unusual weather patterns"> Unusual weather patterns</label>
+                        <label class="option" onclick="selectMultiple(this, 'q8')"><input type="checkbox" name="q8" value="I don't know"> I don't know</label>
+                        <label class="option" onclick="selectMultiple(this, 'q8')"><input type="checkbox" name="q8" value="None of the above"> None of the above</label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">9. Which activities do you think contribute to climate change?</div>
+                    <div class="multiple-note">(Tick all that apply)</div>
+                    <div class="options">
+                        <label class="option" onclick="selectMultiple(this, 'q9')"><input type="checkbox" name="q9" value="Burning of fossil fuels"> Burning of fossil fuels (e.g., petrol, diesel)</label>
+                        <label class="option" onclick="selectMultiple(this, 'q9')"><input type="checkbox" name="q9" value="Deforestation"> Deforestation</label>
+                        <label class="option" onclick="selectMultiple(this, 'q9')"><input type="checkbox" name="q9" value="Industrial emissions"> Industrial emissions</label>
+                        <label class="option" onclick="selectMultiple(this, 'q9')"><input type="checkbox" name="q9" value="Natural disasters"> Natural disasters</label>
+                        <label class="option" onclick="selectMultiple(this, 'q9')"><input type="checkbox" name="q9" value="Excessive waste burning"> Excessive waste burning</label>
+                        <label class="option" onclick="selectMultiple(this, 'q9')"><input type="checkbox" name="q9" value="I'm not sure"> I'm not sure</label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">10. Have you heard about respiratory diseases before?</div>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'q10')"><input type="radio" name="q10" value="Yes"> Yes</label>
+                        <label class="option" onclick="selectOption(this, 'q10')"><input type="radio" name="q10" value="No"> No</label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">11. Which of the following are respiratory diseases?</div>
+                    <div class="multiple-note">(Tick all that apply)</div>
+                    <div class="options">
+                        <label class="option" onclick="selectMultiple(this, 'q11')"><input type="checkbox" name="q11" value="Asthma"> Asthma</label>
+                        <label class="option" onclick="selectMultiple(this, 'q11')"><input type="checkbox" name="q11" value="Bronchitis"> Bronchitis</label>
+                        <label class="option" onclick="selectMultiple(this, 'q11')"><input type="checkbox" name="q11" value="Tuberculosis (TB)"> Tuberculosis (TB)</label>
+                        <label class="option" onclick="selectMultiple(this, 'q11')"><input type="checkbox" name="q11" value="Chronic Obstructive Pulmonary Disease (COPD)"> Chronic Obstructive Pulmonary Disease (COPD)</label>
+                        <label class="option" onclick="selectMultiple(this, 'q11')"><input type="checkbox" name="q11" value="Sore throat"> Sore throat</label>
+                        <label class="option" onclick="selectMultiple(this, 'q11')"><input type="checkbox" name="q11" value="I'm not sure"> I'm not sure</label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">12. Which climate-related events do you think can make respiratory diseases worse?</div>
+                    <div class="multiple-note">(Tick all that apply)</div>
+                    <div class="options">
+                        <label class="option" onclick="selectMultiple(this, 'q12')"><input type="checkbox" name="q12" value="Air pollution"> Air pollution</label>
+                        <label class="option" onclick="selectMultiple(this, 'q12')"><input type="checkbox" name="q12" value="Excess heat"> Excess heat</label>
+                        <label class="option" onclick="selectMultiple(this, 'q12')"><input type="checkbox" name="q12" value="Dust and smoke"> Dust and smoke</label>
+                        <label class="option" onclick="selectMultiple(this, 'q12')"><input type="checkbox" name="q12" value="Cold and damp weather"> Cold and damp weather</label>
+                        <label class="option" onclick="selectMultiple(this, 'q12')"><input type="checkbox" name="q12" value="I don't know"> I don't know</label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">13. Do you think climate change can affect human health?</div>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'q13')"><input type="radio" name="q13" value="Yes"> Yes</label>
+                        <label class="option" onclick="selectOption(this, 'q13')"><input type="radio" name="q13" value="No"> No</label>
+                        <label class="option" onclick="selectOption(this, 'q13')"><input type="radio" name="q13" value="Not sure"> Not sure</label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">14. If yes, how do you think it can affect health?</div>
+                    <div class="multiple-note">(Tick all that apply)</div>
+                    <div class="options">
+                        <label class="option" onclick="selectMultiple(this, 'q14')"><input type="checkbox" name="q14" value="Breathing problems"> Breathing problems</label>
+                        <label class="option" onclick="selectMultiple(this, 'q14')"><input type="checkbox" name="q14" value="Heat strokes"> Heat strokes</label>
+                        <label class="option" onclick="selectMultiple(this, 'q14')"><input type="checkbox" name="q14" value="Water-borne diseases"> Water-borne diseases</label>
+                        <label class="option" onclick="selectMultiple(this, 'q14')"><input type="checkbox" name="q14" value="Mental stress"> Mental stress</label>
+                        <label class="option" onclick="selectMultiple(this, 'q14')"><input type="checkbox" name="q14" value="I don't know"> I don't know</label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">15. In your opinion, is climate change contributing to the increase in respiratory diseases?</div>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'q15')"><input type="radio" name="q15" value="Yes"> Yes</label>
+                        <label class="option" onclick="selectOption(this, 'q15')"><input type="radio" name="q15" value="No"> No</label>
+                        <label class="option" onclick="selectOption(this, 'q15')"><input type="radio" name="q15" value="Not sure"> Not sure</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>SECTION C: Attitude Toward Climate Change and Health</h2>
+                
+                <table class="likert-table">
+                    <thead>
+                        <tr>
+                            <th>Statement</th>
+                            <th>Strongly Disagree</th>
+                            <th>Disagree</th>
+                            <th>Neutral</th>
+                            <th>Agree</th>
+                            <th>Strongly Agree</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>16. Climate change is a serious issue that affects everyone.</td>
+                            <td><input type="radio" name="q16" value="Strongly Disagree" onclick="updateLikert(this)"></td>
+                            <td><input type="radio" name="q16" value="Disagree" onclick="updateLikert(this)"></td>
+                            <td><input type="radio" name="q16" value="Neutral" onclick="updateLikert(this)"></td>
+                            <td><input type="radio" name="q16" value="Agree" onclick="updateLikert(this)"></td>
+                            <td><input type="radio" name="q16" value="Strongly Agree" onclick="updateLikert(this)"></td>
+                        </tr>
+                        <tr>
+                            <td>17. Climate change can lead to more breathing problems.</td>
+                            <td><input type="radio" name="q17" value="Strongly Disagree" onclick="updateLikert(this)"></td>
+                            <td><input type="radio" name="q17" value="Disagree" onclick="updateLikert(this)"></td>
+                            <td><input type="radio" name="q17" value="Neutral" onclick="updateLikert(this)"></td>
+                            <td><input type="radio" name="q17" value="Agree" onclick="updateLikert(this)"></td>
+                            <td><input type="radio" name="q17" value="Strongly Agree" onclick="updateLikert(this)"></td>
+                        </tr>
+                        <tr>
+                            <td>18. The effects of climate change can be reduced.</td>
+                            <td><input type="radio" name="q18" value="Strongly Disagree" onclick="updateLikert(this)"></td>
+                            <td><input type="radio" name="q18" value="Disagree" onclick="updateLikert(this)"></td>
+                            <td><input type="radio" name="q18" value="Neutral" onclick="updateLikert(this)"></td>
+                            <td><input type="radio" name="q18" value="Agree" onclick="updateLikert(this)"></td>
+                            <td><input type="radio" name="q18" value="Strongly Agree" onclick="updateLikert(this)"></td>
+                        </tr>
+                        <tr>
+                            <td>19. I feel responsible to learn about climate change as a healthcare student.</td>
+                            <td><input type="radio" name="q19" value="Strongly Disagree" onclick="updateLikert(this)"></td>
+                            <td><input type="radio" name="q19" value="Disagree" onclick="updateLikert(this)"></td>
+                            <td><input type="radio" name="q19" value="Neutral" onclick="updateLikert(this)"></td>
+                            <td><input type="radio" name="q19" value="Agree" onclick="updateLikert(this)"></td>
+                            <td><input type="radio" name="q19" value="Strongly Agree" onclick="updateLikert(this)"></td>
+                        </tr>
+                        <tr>
+                            <td>20. I would encourage others to protect the environment.</td>
+                            <td><input type="radio" name="q20" value="Strongly Disagree" onclick="updateLikert(this)"></td>
+                            <td><input type="radio" name="q20" value="Disagree" onclick="updateLikert(this)"></td>
+                            <td><input type="radio" name="q20" value="Neutral" onclick="updateLikert(this)"></td>
+                            <td><input type="radio" name="q20" value="Agree" onclick="updateLikert(this)"></td>
+                            <td><input type="radio" name="q20" value="Strongly Agree" onclick="updateLikert(this)"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="section">
+                <h2>SECTION D: Perception of Climate-Health Link and Student Responsibility</h2>
+                
+                <div class="question">
+                    <div class="question-text">21. Who do you think should take the most responsibility in reducing climate change impacts?</div>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'q21')"><input type="radio" name="q21" value="Government"> Government</label>
+                        <label class="option" onclick="selectOption(this, 'q21')"><input type="radio" name="q21" value="Individuals"> Individuals</label>
+                        <label class="option" onclick="selectOption(this, 'q21')"><input type="radio" name="q21" value="Health professionals"> Health professionals</label>
+                        <label class="option" onclick="selectOption(this, 'q21')"><input type="radio" name="q21" value="All of the above"> All of the above</label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">22. Do you think students should be taught about the health effects of climate change in school?</div>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'q22')"><input type="radio" name="q22" value="Yes"> Yes</label>
+                        <label class="option" onclick="selectOption(this, 'q22')"><input type="radio" name="q22" value="No"> No</label>
+                        <label class="option" onclick="selectOption(this, 'q22')"><input type="radio" name="q22" value="Not sure"> Not sure</label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">23. Would you be willing to participate in campaigns or events promoting climate and health awareness?</div>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'q23')"><input type="radio" name="q23" value="Yes"> Yes</label>
+                        <label class="option" onclick="selectOption(this, 'q23')"><input type="radio" name="q23" value="No"> No</label>
+                        <label class="option" onclick="selectOption(this, 'q23')"><input type="radio" name="q23" value="Maybe"> Maybe</label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">24. Do you think healthcare workers have a role in educating the public about climate-related health issues?</div>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'q24')"><input type="radio" name="q24" value="Yes"> Yes</label>
+                        <label class="option" onclick="selectOption(this, 'q24')"><input type="radio" name="q24" value="No"> No</label>
+                        <label class="option" onclick="selectOption(this, 'q24')"><input type="radio" name="q24" value="Not sure"> Not sure</label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">25. Suggest what healthcare students like yourself can do to help reduce the impact of climate change on health.</div>
+                    <div class="multiple-note">(Tick all that apply)</div>
+                    <div class="options">
+                        <label class="option" onclick="selectMultiple(this, 'q25')"><input type="checkbox" name="q25" value="Educate others about climate change and health related risk"> Educate others about climate change and health related risk</label>
+                        <label class="option" onclick="selectMultiple(this, 'q25')"><input type="checkbox" name="q25" value="Join climate change advocacy groups"> Join climate change advocacy groups</label>
+                        <label class="option" onclick="selectMultiple(this, 'q25')"><input type="checkbox" name="q25" value="Share climate change health info on social media"> Share climate change health info on social media</label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">Phone Number (For authenticity):</div>
+                    <div class="options">
+                        <input type="text" name="phone" class="text-input" placeholder="Enter phone number">
+                    </div>
+                </div>
+            </div>
+        </form>
+        
+        <div class="buttons">
+            <button type="button" class="btn btn-primary" onclick="saveResponse()">Save Response & Next Person</button>
+            <button type="button" class="btn btn-secondary" onclick="clearForm()">Clear Form</button>
+            <button type="button" class="btn btn-view" onclick="toggleDataView()">View All Data</button>
+            <button type="button" class="btn btn-export" onclick="exportData()">Export CSV</button>
+        </div>
+    </div>
+    
+    <div class="data-view" id="dataView">
+        <div style="padding: 20px; background: #34495e; color: white;">
+            <h3>Collected Data</h3>
+            <button type="button" class="btn btn-secondary" onclick="toggleDataView()" style="float: right;">Hide Data</button>
+        </div>
+        <div style="max-height: 400px; overflow: auto;">
+            <table class="data-table" id="dataTable">
+                <thead>
+                    <tr>
+                        <th>Person</th><th>Age</th><th>Gender</th><th>Department</th><th>Year</th><th>Climate Training</th><th>Respiratory Course</th><th>Climate Definition</th><th>Climate Signs</th><th>Climate Activities</th><th>Heard Respiratory</th><th>Respiratory Diseases</th><th>Climate Events</th><th>Climate Health</th><th>Health Effects</th><th>Climate Respiratory</th><th>Serious Issue</th><th>Breathing Problems</th><th>Effects Reduced</th><th>Responsibility Learn</th><th>Encourage Environment</th><th>Responsibility</th><th>Teach Students</th><th>Participate Campaigns
